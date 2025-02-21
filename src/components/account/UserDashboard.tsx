@@ -19,11 +19,13 @@ interface UserDashboardProps {
 
 const UserDashboard = ({ user, onUpdate }: UserDashboardProps) => {
   const defaultUser = {
-    name: "John Doe",
-    email: "john@example.com",
+    name:
+      localStorage.getItem("userName") ||
+      `User ${localStorage.getItem("userId") || "Unknown"}`,
+    email: localStorage.getItem("userEmail") || "user@example.com",
     membershipType: "club" as const,
     memberSince: new Date(2023, 0, 1),
-    referralCode: "JOHND2024",
+    referralCode: localStorage.getItem("referralCode") || "USER2024",
   };
 
   const currentUser = user || defaultUser;

@@ -45,6 +45,11 @@ const AdminLayout = ({ children, currentPath = "" }: AdminLayoutProps) => {
       label: "Settings",
       path: "/admin/settings",
     },
+    {
+      icon: <Users className="w-4 h-4" />,
+      label: "Profile",
+      path: "/admin/profile",
+    },
   ];
 
   return (
@@ -80,7 +85,6 @@ const AdminLayout = ({ children, currentPath = "" }: AdminLayoutProps) => {
           </div>
         </ScrollArea>
       </div>
-
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         <div className="p-8">{children}</div>

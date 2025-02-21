@@ -1,0 +1,7 @@
+import AdminPanelStoryboard from "../admin-panel";
+
+const Default = () => {
+  return <AdminPanelStoryboard />;
+};
+
+export default Default;

@@ -2,20 +2,22 @@ import React from "react";
 import Navigation from "./Navigation";
 import HeroSection from "./HeroSection";
 import { useNavigate } from "react-router-dom";
+import { useMembership } from "@/contexts/MembershipContext";
 
 import MembershipBenefits from "./MembershipBenefits";
 import FeaturedDestinations from "./FeaturedDestinations";
 
 interface HomeProps {
   onSearch?: (searchParams: any) => void;
-  isLoggedIn?: boolean;
 }
 
-const Home = ({ onSearch = () => {}, isLoggedIn = false }: HomeProps) => {
+const Home = ({ onSearch = () => {} }: HomeProps) => {
   const navigate = useNavigate();
+  const { isAuthenticated, membershipType } = useMembership();
+
   return (
     <div className="min-h-screen bg-white">
-      <Navigation isLoggedIn={isLoggedIn} />
+      <Navigation />
 
       {/* Add padding top to account for fixed navigation */}
       <main className="pt-20">

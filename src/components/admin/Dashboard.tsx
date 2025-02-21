@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 import { Users, Hotel, CreditCard, TrendingUp } from "lucide-react";
 
 const stats = [
@@ -7,26 +7,36 @@ const stats = [
     label: "Total Users",
     value: "1,234",
     change: "+12%",
-    icon: <Users className="w-4 h-4" />,
+    changeLabel: "vs last month",
+    icon: <Users className="w-4 h-4 text-primary" />,
   },
   {
     label: "Active Hotels",
     value: "156",
     change: "+5%",
-    icon: <Hotel className="w-4 h-4" />,
+    changeLabel: "vs last month",
+    icon: <Hotel className="w-4 h-4 text-primary" />,
   },
   {
     label: "Revenue",
     value: "$45,678",
     change: "+8%",
-    icon: <CreditCard className="w-4 h-4" />,
+    changeLabel: "vs last month",
+    icon: <CreditCard className="w-4 h-4 text-primary" />,
   },
   {
     label: "Bookings",
     value: "892",
     change: "+15%",
-    icon: <TrendingUp className="w-4 h-4" />,
+    changeLabel: "vs last month",
+    icon: <TrendingUp className="w-4 h-4 text-primary" />,
   },
+];
+
+const recentActivity = [
+  "New user registration: John Doe",
+  "Booking confirmed: Luxury Beach Resort",
+  "New review: 5 stars for Mountain Lodge",
 ];
 
 const AdminDashboard = () => {
@@ -54,7 +64,7 @@ const AdminDashboard = () => {
                   {stat.change}
                 </span>
                 <span className="text-muted-foreground ml-2">
-                  vs last month
+                  {stat.changeLabel}
                 </span>
               </div>
             </CardContent>
@@ -62,57 +72,22 @@ const AdminDashboard = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Recent Activity</h3>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                "New user registration: John Doe",
-                "Booking confirmed: Luxury Beach Resort",
-                "New review: 5 stars for Mountain Lodge",
-                "Payment received: $1,299",
-              ].map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-2 border-b last:border-0"
-                >
-                  <span>{activity}</span>
-                  <span className="text-sm text-muted-foreground">2m ago</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Popular Destinations</h3>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { name: "Maldives", bookings: 156 },
-                { name: "Swiss Alps", bookings: 129 },
-                { name: "Bali", bookings: 98 },
-                { name: "Santorini", bookings: 87 },
-              ].map((destination, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-2 border-b last:border-0"
-                >
-                  <span>{destination.name}</span>
-                  <span className="text-sm font-medium">
-                    {destination.bookings} bookings
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardContent className="pt-6">
+          <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+          <div className="space-y-4">
+            {recentActivity.map((activity, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between py-2 border-b last:border-0"
+              >
+                <span>{activity}</span>
+                <span className="text-sm text-muted-foreground">2m ago</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

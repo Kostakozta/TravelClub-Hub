@@ -2,6 +2,8 @@ import React from "react";
 import { Button } from "./ui/button";
 import NotificationCenter from "./NotificationCenter";
 import { useNavigate } from "react-router-dom";
+import { useMembership } from "@/contexts/MembershipContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,15 +14,18 @@ import {
 } from "./ui/navigation-menu";
 import { cn } from "@/lib/utils";
 
-interface NavigationProps {
-  isLoggedIn?: boolean;
-  membershipType?: "none" | "browser" | "club";
-}
+const Navigation = () => {
+  const { isAuthenticated: isLoggedIn, membershipType } = useMembership();
+  const { signOut } = useAuth();
 
-const Navigation = ({
-  isLoggedIn = false,
-  membershipType = "none",
-}: NavigationProps) => {
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate("/signin");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
   const navigate = useNavigate();
 
   return (
@@ -122,6 +127,19 @@ const Navigation = ({
         <div className="flex items-center gap-4">
           {isLoggedIn ? (
             <div className="flex items-center gap-4">
+              {membershipType === "admin" && (
+                <>
+                  <span className="text-sm font-medium px-3 py-1 bg-red-100 text-red-800 rounded-full">
+                    Admin
+                  </span>
+                  <Button variant="ghost" onClick={handleSignOut}>
+                    Sign Out
+                  </Button>
+                  <Button variant="ghost" onClick={() => navigate("/admin")}>
+                    Admin Panel
+                  </Button>
+                </>
+              )}
               {membershipType === "club" && (
                 <span className="text-sm font-medium px-3 py-1 bg-primary/10 text-primary rounded-full">
                   Club Member
@@ -133,7 +151,14 @@ const Navigation = ({
                 </span>
               )}
               <NotificationCenter />
-              <Button variant="ghost" onClick={() => navigate("/account")}>
+              <Button
+                variant="ghost"
+                onClick={() =>
+                  navigate(
+                    membershipType === "admin" ? "/admin/profile" : "/account",
+                  )
+                }
+              >
                 My Account
               </Button>
             </div>

@@ -20,6 +20,8 @@ interface DestinationCardProps {
   membershipType?: "none" | "browser" | "club";
 }
 
+import { useNavigate } from "react-router-dom";
+
 const DestinationCard = ({
   imageUrl = "https://images.unsplash.com/photo-1562790351-d273a961e0e9?w=800&auto=format&fit=crop",
   title = "Luxury Resort & Spa",
@@ -30,8 +32,15 @@ const DestinationCard = ({
   location = "Maldives",
   membershipType = "none",
 }: DestinationCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <Card className="w-[380px] h-[280px] overflow-hidden group bg-white rounded-xl transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+    <Card
+      className="w-[380px] h-[280px] overflow-hidden group bg-white rounded-xl transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
+      onClick={() =>
+        navigate(`/destinations/${title.toLowerCase().replace(/\s+/g, "-")}`)
+      }
+    >
       <CardContent className="p-0 relative h-full">
         <div className="relative h-full">
           <img
