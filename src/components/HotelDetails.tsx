@@ -1,163 +1,213 @@
 import React from "react";
-import { Card, CardContent, CardHeader } from "./ui/card";
+import { Card, CardContent, CardHeader, CardFooter } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { ScrollArea } from "./ui/scroll-area";
-import { Heart } from "lucide-react";
+import { Calendar } from "./ui/calendar";
+import { GuestSelector } from "./GuestSelector";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon, Heart } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useMembership } from "../contexts/MembershipContext";
+import RequireMembership from "./RequireMembership";
+import { DateRange } from "react-day-picker";
 
 interface HotelDetailsProps {
   hotel?: {
     id: string;
     name: string;
-    description: string;
     location: string;
-    price: number;
-    rating: number;
-    images: string[];
+    description: string;
     amenities: string[];
-    rooms: Array<{
-      id: string;
-      name: string;
-      description: string;
-      price: number;
-      capacity: number;
-      amenities: string[];
-    }>;
+    images: string[];
+    price: {
+      standard: number;
+      club: number;
+    };
+    rating: number;
   };
-  onSave?: (hotelId: string) => void;
-  onBookRoom?: (roomId: string) => void;
+  onSave?: () => void;
+  onRequestQuote?: (data: any) => void;
 }
 
 const defaultHotel = {
   id: "1",
-  name: "Luxury Beach Resort",
-  description: "Experience paradise in our beachfront luxury resort",
+  name: "Luxury Beach Resort & Spa",
   location: "Maldives",
-  price: 599,
-  rating: 4.8,
+  description:
+    "Experience paradise in our overwater villas with direct access to crystal clear waters.",
+  amenities: ["Private Pool", "Ocean View", "Spa Access", "Butler Service"],
   images: [
-    "https://images.unsplash.com/photo-1571896349842-33c89424de2d",
-    "https://images.unsplash.com/photo-1571896349842-33c89424de2d",
+    "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800",
+    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800",
   ],
-  amenities: [
-    "Private Beach",
-    "Spa",
-    "Pool",
-    "Restaurant",
-    "Fitness Center",
-    "Room Service",
-  ],
-  rooms: [
-    {
-      id: "1",
-      name: "Ocean View Suite",
-      description: "Luxurious suite with panoramic ocean views",
-      price: 799,
-      capacity: 2,
-      amenities: ["King Bed", "Balcony", "Mini Bar", "Ocean View"],
-    },
-    {
-      id: "2",
-      name: "Beach Villa",
-      description: "Spacious villa steps from the beach",
-      price: 1299,
-      capacity: 4,
-      amenities: ["Private Pool", "Kitchen", "Multiple Rooms", "Beach Access"],
-    },
-  ],
+  price: {
+    standard: 1200,
+    club: 950,
+  },
+  rating: 4.8,
 };
 
-export const HotelDetails = ({
+const HotelDetails = ({
   hotel = defaultHotel,
   onSave,
-  onBookRoom,
+  onRequestQuote,
 }: HotelDetailsProps) => {
+  const { membershipType, isAuthenticated } = useMembership();
+  const [date, setDate] = React.useState<DateRange | undefined>();
+
+  const [guests, setGuests] = React.useState({
+    adults: 2,
+    children: [],
+  });
+
+  const handleRequestQuote = (data: any) => {
+    if (!isAuthenticated) {
+      return;
+    }
+    onRequestQuote?.({
+      ...data,
+      membershipType,
+      price:
+        membershipType === "club" ? hotel.price.club : hotel.price.standard,
+    });
+  };
+
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader className="relative">
-        <div className="relative h-[400px] rounded-t-lg overflow-hidden">
-          <img
-            src={hotel.images[0]}
-            alt={hotel.name}
-            className="w-full h-full object-cover"
-          />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 bg-white/80 hover:bg-white"
-            onClick={() => onSave?.(hotel.id)}
-          >
-            <Heart className="h-5 w-5" />
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="p-6">
-        <div className="flex justify-between items-start mb-4">
+    <RequireMembership requiredType="browser">
+      <div className="w-full max-w-6xl mx-auto p-6 space-y-6 bg-white">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h2 className="text-2xl font-bold mb-2">{hotel.name}</h2>
-            <p className="text-muted-foreground">{hotel.location}</p>
+            <div className="aspect-[4/3] overflow-hidden rounded-lg">
+              <img
+                src={hotel.images[0]}
+                alt={hotel.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              {hotel.images.slice(1).map((image, index) => (
+                <div
+                  key={index}
+                  className="aspect-[4/3] overflow-hidden rounded-lg"
+                >
+                  <img
+                    src={image}
+                    alt={`${hotel.name} ${index + 2}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="text-right">
-            <div className="text-sm">Starting from</div>
-            <div className="text-2xl font-bold">${hotel.price}</div>
-            <div className="text-sm">per night</div>
-          </div>
-        </div>
 
-        <Tabs defaultValue="rooms" className="w-full">
-          <TabsList>
-            <TabsTrigger value="rooms">Rooms</TabsTrigger>
-            <TabsTrigger value="amenities">Amenities</TabsTrigger>
-            <TabsTrigger value="details">Details</TabsTrigger>
-          </TabsList>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold">{hotel.name}</h1>
+              <p className="text-muted-foreground">{hotel.location}</p>
+            </div>
 
-          <TabsContent value="rooms" className="mt-4">
-            <ScrollArea className="h-[400px] pr-4">
-              <div className="space-y-4">
-                {hotel.rooms.map((room) => (
-                  <Card key={room.id}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-semibold">{room.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {room.description}
-                          </p>
-                        </div>
-                        <Button onClick={() => onBookRoom?.(room.id)}>
-                          Book Now
-                        </Button>
-                      </div>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {room.amenities.map((amenity) => (
-                          <Badge key={amenity} variant="secondary">
-                            {amenity}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </ScrollArea>
-          </TabsContent>
-
-          <TabsContent value="amenities">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">⭐ {hotel.rating}</Badge>
               {hotel.amenities.map((amenity) => (
                 <Badge key={amenity} variant="outline">
                   {amenity}
                 </Badge>
               ))}
             </div>
-          </TabsContent>
 
-          <TabsContent value="details">
-            <p className="text-muted-foreground">{hotel.description}</p>
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+            <p className="text-lg">{hotel.description}</p>
+
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-2xl font-bold">
+                      ${hotel.price.standard}
+                    </p>
+                    <p className="text-sm text-muted-foreground">per night</p>
+                  </div>
+                  {membershipType === "club" ? (
+                    <div className="text-right">
+                      <p className="text-lg font-semibold text-primary">
+                        Club Price: ${hotel.price.club}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Save ${hotel.price.standard - hotel.price.club} per
+                        night
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-right">
+                      <p className="text-sm text-muted-foreground">
+                        Join Club to save $
+                        {hotel.price.standard - hotel.price.club} per night
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground",
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {date?.from ? (
+                            date.to ? (
+                              <>
+                                {format(date.from, "LLL dd, y")} -{" "}
+                                {format(date.to, "LLL dd, y")}
+                              </>
+                            ) : (
+                              format(date.from, "LLL dd, y")
+                            )
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          initialFocus
+                          mode="range"
+                          defaultMonth={date?.from}
+                          selected={date}
+                          onSelect={setDate}
+                          numberOfMonths={2}
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    <GuestSelector value={guests} onGuestsChange={setGuests} />
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="flex gap-2">
+                <Button
+                  className="flex-1"
+                  onClick={() => handleRequestQuote({ dates: date, guests })}
+                >
+                  Request Quote
+                </Button>
+                <Button variant="outline" className="flex-1" onClick={onSave}>
+                  <Heart className="mr-2 h-4 w-4" />
+                  Save for Later
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </RequireMembership>
   );
 };
+
+export default HotelDetails;

@@ -32,7 +32,7 @@ const defaultSavedHotels: SavedHotel[] = [
   },
 ];
 
-export const SavedHotels = ({
+const SavedHotels = ({
   savedHotels = defaultSavedHotels,
   onRemove,
   onView,
@@ -92,3 +92,5 @@ export const SavedHotels = ({
     </Card>
   );
 };
+
+export default SavedHotels;

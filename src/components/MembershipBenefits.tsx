@@ -22,41 +22,43 @@ const BenefitCard = ({ icon, title, description }: BenefitCardProps) => {
   );
 };
 
-interface MembershipBenefitsProps {
-  benefits?: Array<{
-    icon: keyof typeof benefitIcons;
-    title: string;
-    description: string;
-  }>;
-}
-
 const benefitIcons = {
   shield: <Shield className="w-6 h-6 text-primary" />,
   gift: <Gift className="w-6 h-6 text-primary" />,
   clock: <Clock className="w-6 h-6 text-primary" />,
   creditCard: <CreditCard className="w-6 h-6 text-primary" />,
-};
+} as const;
+
+type BenefitIconType = keyof typeof benefitIcons;
+
+interface MembershipBenefitsProps {
+  benefits?: Array<{
+    icon: BenefitIconType;
+    title: string;
+    description: string;
+  }>;
+}
 
 const defaultBenefits = [
   {
-    icon: "shield",
+    icon: "shield" as BenefitIconType,
     title: "Premium Protection",
     description:
       "Comprehensive travel insurance and 24/7 support for peace of mind",
   },
   {
-    icon: "gift",
+    icon: "gift" as BenefitIconType,
     title: "Exclusive Perks",
     description: "Access to VIP lounges, room upgrades, and special amenities",
   },
   {
-    icon: "clock",
+    icon: "clock" as BenefitIconType,
     title: "Priority Access",
     description:
       "Early booking windows and last-minute availability guarantees",
   },
   {
-    icon: "creditCard",
+    icon: "creditCard" as BenefitIconType,
     title: "Member Pricing",
     description: "Special rates and discounts available only to club members",
   },
