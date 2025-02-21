@@ -1,6 +1,8 @@
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
+
 import { Check } from "lucide-react";
 
 interface PlanFeature {
@@ -54,6 +56,7 @@ interface MembershipPlansProps {
 }
 
 const MembershipPlans = ({ onSelectPlan }: MembershipPlansProps) => {
+  const navigate = useNavigate();
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-16">
       <div className="text-center mb-12">
@@ -109,7 +112,15 @@ const MembershipPlans = ({ onSelectPlan }: MembershipPlansProps) => {
               <Button
                 className="w-full"
                 variant={plan.highlighted ? "default" : "outline"}
-                onClick={() => onSelectPlan?.(plan.name)}
+                onClick={() => {
+                  if (onSelectPlan) {
+                    onSelectPlan(plan.name);
+                  } else {
+                    navigate(
+                      `/signup?plan=${plan.highlighted ? "club" : "browser"}`,
+                    );
+                  }
+                }}
               >
                 {plan.highlighted ? "Join Now" : "Start Browsing"}
               </Button>

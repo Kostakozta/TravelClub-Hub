@@ -1,23 +1,21 @@
 import React from "react";
 import Navigation from "./Navigation";
 import HeroSection from "./HeroSection";
+import { useNavigate } from "react-router-dom";
+
 import MembershipBenefits from "./MembershipBenefits";
 import FeaturedDestinations from "./FeaturedDestinations";
 
 interface HomeProps {
-  onNavigate?: (path: string) => void;
   onSearch?: (searchParams: any) => void;
   isLoggedIn?: boolean;
 }
 
-const Home = ({
-  onNavigate = () => {},
-  onSearch = () => {},
-  isLoggedIn = false,
-}: HomeProps) => {
+const Home = ({ onSearch = () => {}, isLoggedIn = false }: HomeProps) => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-white">
-      <Navigation onNavigate={onNavigate} isLoggedIn={isLoggedIn} />
+      <Navigation isLoggedIn={isLoggedIn} />
 
       {/* Add padding top to account for fixed navigation */}
       <main className="pt-20">
@@ -46,7 +44,7 @@ const Home = ({
                     className="text-gray-400 hover:text-white transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      onNavigate("/about");
+                      navigate("/about");
                     }}
                   >
                     About Us
@@ -58,7 +56,7 @@ const Home = ({
                     className="text-gray-400 hover:text-white transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      onNavigate("/contact");
+                      navigate("/contact");
                     }}
                   >
                     Contact
@@ -70,7 +68,7 @@ const Home = ({
                     className="text-gray-400 hover:text-white transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      onNavigate("/terms");
+                      navigate("/terms");
                     }}
                   >
                     Terms & Conditions
@@ -87,7 +85,7 @@ const Home = ({
                     className="text-gray-400 hover:text-white transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      onNavigate("/faq");
+                      navigate("/faq");
                     }}
                   >
                     FAQ
@@ -99,7 +97,7 @@ const Home = ({
                     className="text-gray-400 hover:text-white transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      onNavigate("/privacy");
+                      navigate("/privacy");
                     }}
                   >
                     Privacy Policy
@@ -111,7 +109,7 @@ const Home = ({
                     className="text-gray-400 hover:text-white transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      onNavigate("/help");
+                      navigate("/help");
                     }}
                   >
                     Help Center

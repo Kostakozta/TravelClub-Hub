@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 
-type MembershipType = "none" | "browser" | "club";
+type MembershipType = "none" | "browser" | "club" | "admin";
 
 interface MembershipContextType {
   membershipType: MembershipType;

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "./ui/button";
 import NotificationCenter from "./NotificationCenter";
+import { useNavigate } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,16 +13,16 @@ import {
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
-  onNavigate?: (path: string) => void;
   isLoggedIn?: boolean;
   membershipType?: "none" | "browser" | "club";
 }
 
 const Navigation = ({
-  onNavigate = () => {},
   isLoggedIn = false,
   membershipType = "none",
 }: NavigationProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="w-full h-20 bg-white/95 backdrop-blur-md border-b border-gray-200/20 fixed top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
@@ -31,7 +32,7 @@ const Navigation = ({
             className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
             onClick={(e) => {
               e.preventDefault();
-              onNavigate("/");
+              navigate("/");
             }}
           >
             Travel Club
@@ -58,7 +59,7 @@ const Navigation = ({
                             )}
                             onClick={(e) => {
                               e.preventDefault();
-                              onNavigate(item.href);
+                              navigate(item.href);
                             }}
                           >
                             <div className="text-sm font-medium leading-none">
@@ -88,7 +89,7 @@ const Navigation = ({
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             onClick={(e) => {
                               e.preventDefault();
-                              onNavigate(item.href);
+                              navigate(item.href);
                             }}
                           >
                             <div className="text-sm font-medium leading-none">
@@ -108,7 +109,7 @@ const Navigation = ({
                   className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
                   onClick={(e) => {
                     e.preventDefault();
-                    onNavigate("/deals");
+                    navigate("/deals");
                   }}
                 >
                   Deals
@@ -132,7 +133,7 @@ const Navigation = ({
                 </span>
               )}
               <NotificationCenter />
-              <Button variant="ghost" onClick={() => onNavigate("/account")}>
+              <Button variant="ghost" onClick={() => navigate("/account")}>
                 My Account
               </Button>
             </div>
@@ -140,11 +141,11 @@ const Navigation = ({
             <div className="flex items-center gap-4">
               <Button
                 variant="outline"
-                onClick={() => onNavigate("/membership/pricing")}
+                onClick={() => navigate("/membership/pricing")}
               >
                 Join Club
               </Button>
-              <Button onClick={() => onNavigate("/signin")}>Sign In</Button>
+              <Button onClick={() => navigate("/signin")}>Sign In</Button>
             </div>
           )}
         </div>
